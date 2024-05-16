@@ -11,13 +11,19 @@ import { GameInfoComponent } from '../game-info/game-info.component';
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [CommonModule, PlayerComponent, MatButtonModule, MatIconModule, GameInfoComponent],
+  imports: [
+    CommonModule,
+    PlayerComponent,
+    MatButtonModule,
+    MatIconModule,
+    GameInfoComponent,
+  ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
 })
 export class GameComponent implements OnInit {
   pickCardAnimation = false;
-  currentCard: string | undefined = '';
+  currentCard: string = '';
 
   constructor(public dialog: MatDialog) {}
   game!: Game;
@@ -32,15 +38,17 @@ export class GameComponent implements OnInit {
 
   takeCard() {
     if (!this.pickCardAnimation) {
-      this.currentCard = this.game.stack.pop();
+      let testCard = this.game.stack.pop();
+      if (testCard != undefined) {             /// hier wird der typ undefinden entfernt von pop() methode
+        this.currentCard = testCard;
+      }
       this.pickCardAnimation = true;
 
       console.log(this.currentCard);
       console.log(this.game);
 
       setTimeout(() => {
-        if (this.currentCard != undefined)
-          this.game.playedCard.push(this.currentCard);
+        this.game.playedCard.push(this.currentCard);
         this.pickCardAnimation = false;
       }, 1000);
     }
