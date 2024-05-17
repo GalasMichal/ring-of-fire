@@ -7,17 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameInfoComponent } from '../game-info/game-info.component';
+import { GameModule } from './game.module';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [
-    CommonModule,
-    PlayerComponent,
-    MatButtonModule,
-    MatIconModule,
-    GameInfoComponent,
-  ],
+  imports: [GameModule],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
 })
@@ -39,13 +34,18 @@ export class GameComponent implements OnInit {
   takeCard() {
     if (!this.pickCardAnimation) {
       let testCard = this.game.stack.pop();
-      if (testCard != undefined) {             /// hier wird der typ undefinden entfernt von pop() methode
+      if (testCard != undefined) {
+        /// hier wird der typ undefinden entfernt von pop() methode
         this.currentCard = testCard;
       }
       this.pickCardAnimation = true;
 
       console.log(this.currentCard);
       console.log(this.game);
+
+      this.game.currentPlayer++;
+      this.game.currentPlayer =
+        this.game.currentPlayer % this.game.players.length;
 
       setTimeout(() => {
         this.game.playedCard.push(this.currentCard);
@@ -58,6 +58,7 @@ export class GameComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogAddPlayerComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {
+      if(name && name.length > 0)
       this.game.players.push(name);
     });
   }
